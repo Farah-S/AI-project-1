@@ -63,6 +63,8 @@ class SearchProblem:
         util.raiseNotDefined()
 
 
+
+
 def tinyMazeSearch(problem):
     """
     Returns a sequence of moves that solves tinyMaze.  For any other maze, the
@@ -72,6 +74,9 @@ def tinyMazeSearch(problem):
     s = Directions.SOUTH
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
+
+
+
 
 def depthFirstSearch(problem): #problem is type PositionSearchProblem i think, it can be found in searchAgents.py
     """
@@ -122,6 +127,9 @@ def depthFirstSearch(problem): #problem is type PositionSearchProblem i think, i
     return sol
     #util.raiseNotDefined()
 
+
+
+
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
@@ -130,25 +138,37 @@ def breadthFirstSearch(problem):
     #q = util.Queue()
     util.raiseNotDefined()
 
+
+
+
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
-def nullHeuristic(state, problem=None):
+
+
+
+def nullHeuristic(state, problem=None):#technically useless
     """
     A heuristic function estimates the cost from the current state to the nearest
     goal in the provided SearchProblem.  This heuristic is trivial.
     """
     return 0
 
-def aStarSearch(problem, heuristic=nullHeuristic):
+
+
+
+def aStarSearch(problem): #, heuristic=nullHeuristic
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
-def GreedyBestFirstSearch(problem, heuristic=nullHeuristic):
-    """Search the node that has the lowest combined cost and heuristic first."""
+
+
+
+def GreedyBestFirstSearch(problem):
+    """Search the node that has the lowest heuristic first."""
     "*** YOUR CODE HERE ***"
     
     pqueue=[] #priority queue
@@ -173,11 +193,11 @@ def GreedyBestFirstSearch(problem, heuristic=nullHeuristic):
         
         for neighbour in allNeighbours: #cycle through all the neighbours
             if neighbour[0] not in visited: #check if the neighbour has been visited
-                heuristic=searchAgents.euclideanHeuristic(neighbour[0],problem) #calculate the heuristic for this neighbour
+                heur=searchAgents.euclideanHeuristic(neighbour[0],problem) #calculate the heuristic for this neighbour
                 path=[]
                 path=current[2].copy() #copy the parent node path
                 path.append(neighbour[1]) #add this node to the path
-                pqueue.append([heuristic,neighbour,path]) #if not visited add the neighbour to pqueue
+                pqueue.append([heur,neighbour,path]) #if not visited add the neighbour to pqueue
                 
         pqueue.sort(key = lambda x: x[0]) #sort the priority queue based on heuristic
         topNeighbour=pqueue[0] #take the top of the queue (least heuristic)
@@ -185,6 +205,8 @@ def GreedyBestFirstSearch(problem, heuristic=nullHeuristic):
     
     return sol
     #util.raiseNotDefined()
+
+
 
 
 # Abbreviations
