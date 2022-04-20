@@ -17,6 +17,7 @@ In search.py, you will implement generic search algorithms which are called by
 Pacman agents (in searchAgents.py).
 """
 
+import searchAgents
 import util
 
 class SearchProblem:
@@ -95,7 +96,7 @@ def depthFirstSearch(problem): #problem is type PositionSearchProblem i think, i
     "*** YOUR CODE HERE ***"
     #import util
     st = [] #stack
-    visited = [] #duh
+    visited = [] 
     sol=[] #solution steps
     st.append((problem.getStartState(),'',0)) #push starting "node"
     visited.append(problem.getStartState())
@@ -149,7 +150,41 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 def GreedyBestFirstSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    
+    pqueue=[] #priority queue
+    visited = [] 
+    sol=[] #solution steps
+    
+    pqueue.append([0,(problem.getStartState(),'',0),[]]) #[heuristic,((pos),direction,cost),[path]]
+    visited.append(problem.getStartState())
+
+    while pqueue:  #while queue is not empty
+        current = pqueue.pop(0) #grab first element
+        sol=current[2] #save current path as solution
+
+        if current[1][0] not in visited: #check if the node has been visited before      
+            visited.append(current[1][0])
+
+        if(problem.isGoalState(current[1][0])): #check if we reached the goal
+            #sol=current[2]
+            return sol #return solution steps
+
+        allNeighbours = problem.getSuccessors(current[1][0]) #get all "successors"/neighbours of this node
+        
+        for neighbour in allNeighbours: #cycle through all the neighbours
+            if neighbour[0] not in visited: #check if the neighbour has been visited
+                heuristic=searchAgents.euclideanHeuristic(neighbour[0],problem) #calculate the heuristic for this neighbour
+                path=[]
+                path=current[2].copy() #copy the parent node path
+                path.append(neighbour[1]) #add this node to the path
+                pqueue.append([heuristic,neighbour,path]) #if not visited add the neighbour to pqueue
+                
+        pqueue.sort(key = lambda x: x[0]) #sort the priority queue based on heuristic
+        topNeighbour=pqueue[0] #take the top of the queue (least heuristic)
+        visited.append(topNeighbour[0]) #add the neighbour to the visited list
+    
+    return sol
+    #util.raiseNotDefined()
 
 
 # Abbreviations
