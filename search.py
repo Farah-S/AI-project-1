@@ -134,71 +134,44 @@ def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
 
-    startingNode = problem.getStartState()
-    if problem.isGoalState(startingNode):
-        return []
 
-    myQueue = util.Queue()
-    visitedNodes = []
-    # (node,actions)
-    myQueue.push((startingNode, []))
-
-    while not myQueue.isEmpty():
-        currentNode, actions = myQueue.pop()
-        if currentNode not in visitedNodes:
-            visitedNodes.append(currentNode)
-
-            if problem.isGoalState(currentNode):
-                return actions
-
-            for nextNode, action, cost in problem.getSuccessors(currentNode):
-                newAction = actions + [action]
-                print (action, end = " ") 
-                #print ([action], end = " ") 
-                #print ([action], end = " ") 
-                myQueue.push((nextNode, newAction))
-
-    util.raiseNotDefined()
-    
-    #sucs=problem.getSuccessors(problem.getStartState())
-    #print(sucs)
-    #q = util.Queue()
-    #util.raiseNotDefined()
-
-   # visited = [] # List to keep track of visited nodes.
-    #queue = []     #Initialize a queue
-    #sol=[] #solution steps
-    #queue.append((problem.getStartState(),'',0))
-    #visited.append(problem.getStartState())
-
-   # while queue:
-      #  s = queue.pop(0) 
-        #print (s, end = " ") 
-       # print (visited, end = " ") 
-      #  allNeighbours = problem.getSuccessors(s[0])
-
-       # if(problem.isGoalState(s[0])): #check if we reached the goal
-        #    return sol #return solution steps
+    visited = [] # List to keep track of visited nodes.
+    queue = []     #Initialize a queue
+    sol=[] #solution steps
+    un_sorted_arr=[]
+    parent = ((-1,-1),'',0)
+    queue.append(((problem.getStartState(),'',0),parent))
+    visited.append((problem.getStartState(),parent))
+    while queue:
+       s = queue.pop(0) 
+       allNeighbours = problem.getSuccessors(s[0][0])
         
-       # if s[0] not in visited: #check if the node has been visited before      
-        #    visited.append(s[0])        
+       if s[0][0] not in visited: #check if the node has been visited before      
+           visited.append(s[0][0])        
 
-       # for neighbour in allNeighbours:
-        #    if neighbour[0] not in visited:
-         #       if problem.isGoalState(neighbour[0]):
-        #            return sol;
+       for neighbour in allNeighbours:
+            if neighbour[0] not in visited:
+                if problem.isGoalState(neighbour[0]):
+                   parent=s[0]
+                   un_sorted_arr.append(neighbour[1])
 
-         #       visited.append(neighbour[0])
-        #        queue.append(neighbour)
-        #        sol.append(neighbour[1])
+                   while(parent[1]!=''):
+                       #print(neighbour[1])
+                       un_sorted_arr.append(parent[1])
+
+                       for search in visited:
+
+                            if(search[0]==parent[0]):
+                                parent= search[1]
+                                break                
+                   reversed_list = list(reversed(un_sorted_arr))
+                   print(reversed_list)  
+                   return reversed_list
                 
-   # return sol;
-    # Driver Code
-    #bfs(visited, graph, 'A')
-
-
-
-
+                visited.append((neighbour[0],s[0]))
+                queue.append((neighbour,s[0]))
+              # sol.append(neighbour[1])
+    return un_sorted_arr.reverse()
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
