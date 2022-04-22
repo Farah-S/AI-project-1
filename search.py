@@ -99,7 +99,6 @@ def depthFirstSearch(problem): #problem is type PositionSearchProblem i think, i
     #REMEMBER For each algorithm ; calculate the searching time , Explored node and path on the figure
     
     "*** YOUR CODE HERE ***"
-    #import util
     st = [] #stack
     visited = [] 
     sol=[] #solution steps
@@ -165,13 +164,15 @@ def breadthFirstSearch(problem):
                                 parent= search[1]
                                 break                
                    reversed_list = list(reversed(un_sorted_arr))
-                   print(reversed_list)  
+                   #print(reversed_list)  
                    return reversed_list
                 
                 visited.append((neighbour[0],s[0]))
                 queue.append((neighbour,s[0]))
               # sol.append(neighbour[1])
     return un_sorted_arr.reverse()
+
+
 
 
 def uniformCostSearch(problem):
@@ -218,10 +219,43 @@ def nullHeuristic(state, problem=None):#technically useless
 
 
 
-def aStarSearch(problem): #, heuristic=nullHeuristic
+def aStarSearch(problem):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    startingNode = problem.getStartState() #starting (x,y) position
+    priorQueue=util.PriorityQueue() #priorityQueue
+    directions=[] #array that will hold the path
+    heur=searchAgents.euclideanHeuristic(startingNode,problem) #calculate heuristic of starting node 
+
+    #((x&y coordinates,cost for current node,directions to get to this node),(priority against all other nodes))
+    priorQueue.push(( startingNode, [], 0), heur+0) 
+
+    if(problem.isGoalState(startingNode)):
+        return directions #if the starting node is the goal return empty path
+
+    visitedList=[] 
+
+    while not priorQueue.isEmpty():
+        
+        pos, directions, oldWeight = priorQueue.pop() #pop top node in queue
+
+        if pos not in visitedList: #if this node isn't visited
+
+            visitedList.append(pos) #add this node to the visited list
+
+            if(problem.isGoalState(pos)): #if we reached the goal
+                return directions #return path
+
+            for neighbourPos, direction, weight in problem.getSuccessors(pos):
+                newWeight = oldWeight + weight #path cost till this node
+                heur=searchAgents.euclideanHeuristic(neighbourPos,problem) #calculate heuristic of neighbour
+                total= heur + newWeight #calculate heuristic + path cost
+                newDirection = directions + [direction] #update path
+                priorQueue.push((neighbourPos,newDirection,newWeight),total) #add neighbour to queue
+
+    return directions
+    #util.raiseNotDefined()
 
 
 
@@ -256,7 +290,7 @@ def GreedyBestFirstSearch(problem):
                 path=[]
                 path=current[2].copy() #copy the parent node path
                 path.append(neighbour[1]) #add this node to the path
-                pqueue.append([heur,neighbour,path]) #if not visited add the neighbour to pqueue
+                pqueue.append([heur,neighbour,path]) #if not visited add the neighbour to priority queue
                 
         pqueue.sort(key = lambda x: x[0]) #sort the priority queue based on heuristic
         topNeighbour=pqueue[0] #take the top of the queue (least heuristic)
