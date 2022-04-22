@@ -172,12 +172,40 @@ def breadthFirstSearch(problem):
                 queue.append((neighbour,s[0]))
               # sol.append(neighbour[1])
     return un_sorted_arr.reverse()
+
+
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+    
+    startingNode = problem.getStartState()
+    priorQueue=util.PriorityQueue()
+    #((priority against all other nodes),(x&y coordinates,cost for currnet node,directions to get to this node))
+    priorQueue.push( ( startingNode, [], 0), 0)
+
+    if(problem.isGoalState(startingNode)):
+        return[]
+
+    visitedList=[]
+
+    while not priorQueue.isEmpty():
+        
+        Node, directions, oldWeight = priorQueue.pop()
+
+        if Node not in visitedList:
+
+            visitedList.append(Node)
+
+            if(problem.isGoalState(Node)):
+                return directions
+
+            for nextNode, direction, weight in problem.getSuccessors(Node):
+                newWeight = oldWeight + weight
+                newDirection = directions + [direction]
+                priorQueue.push((nextNode,newDirection,newWeight),newWeight)
+
+
     util.raiseNotDefined()
-
-
 
 
 def nullHeuristic(state, problem=None):#technically useless
